@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Build emoji chest labels for Valheim signs and copy the rich-text markup to paste in-game. No mods.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪧</text></svg>">
-<title>Valheim Sign Forge</title>
+<title>Valheim Signcarver</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Germania+One&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Noto+Emoji:wght@300..700&display=swap">
 <style>
   :root{
@@ -163,7 +163,7 @@
   /* Sign preview */
   .stage{position:relative;padding:76px 10px 44px;display:grid;justify-items:center;overflow:hidden;border-radius:8px;background:var(--surface)}
   .sign{
-    position:relative;width:100%;max-width:300px;height:92px;border-radius:5px;
+    position:relative;width:100%;max-width:320px;height:132px;border-radius:5px;transform-origin:50% 50%;
     border:2px solid var(--wood-dark);
     background:
       repeating-linear-gradient(92deg,rgba(0,0,0,.09) 0 2px,transparent 2px 9px),
@@ -179,11 +179,11 @@
   .sign::before{left:8px}.sign::after{right:8px}
   .sign-text{
     position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;white-space:nowrap;line-height:1.12;
+    text-align:center;white-space:nowrap;line-height:1.12;text-transform:uppercase;
     font-family:'Germania One','Noto Emoji','Alegreya Sans',serif;color:var(--sign-ink);
     text-shadow:0 1px 0 rgba(0,0,0,.55);
   }
-  .sign-text div{font-family:inherit}
+  .sign-text .block{text-align:center}
   .ground{position:absolute;left:14px;right:14px;bottom:16px;border-top:1px dashed var(--line-strong)}
   .ground span{position:absolute;right:0;top:2px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
@@ -203,6 +203,9 @@
   .primary:hover{filter:brightness(1.08)}
   .primary:active{transform:translateY(1px)}
 
+  .check{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;color:var(--muted);margin-top:10px;cursor:pointer}
+  .check input{margin:4px 0 0;accent-color:var(--accent)}
+  code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px}
   .steps{margin:0;padding-left:20px;font-size:15.5px;display:grid;gap:5px}
   kbd{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px;padding:1px 5px;border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:3px;background:var(--surface)}
 </style>
@@ -211,7 +214,7 @@
 
 <div class="app">
   <header class="masthead">
-    <h1>Valheim Sign Forge</h1>
+    <h1>Valheim Signcarver</h1>
     <p class="lede">Compose an emoji chest label, copy the text, paste it onto a sign in the game. No mods needed: signs already read these tags.</p>
   </header>
 
@@ -223,6 +226,7 @@
           <span class="hint" id="active-hint">Emoji you click go to line 1</span>
         </div>
         <ol class="lines" id="lines"></ol>
+        <p class="hint">Sizes are absolute: 14 fills the plank top to bottom, and lines add up, so 6 for the emoji plus 3 for the word fits. Leave every size blank and the game fits the text to the plank on its own, up to about size 8.</p>
         <div class="lines-foot">
           <button type="button" class="ghost" id="add-line">+ Add line</button>
           <div class="chips" role="group" aria-label="Start from a preset">
@@ -276,8 +280,8 @@
           <h2 class="eyebrow">Preview</h2>
           <span class="hint">approximate</span>
         </div>
-        <div class="stage">
-          <div class="sign"><div class="sign-text" id="sign-text"></div></div>
+        <div class="stage" id="stage">
+          <div class="sign" id="sign"><div class="sign-text" id="sign-text"></div></div>
           <div class="ground"><span>ground / chest</span></div>
         </div>
       </section>
@@ -289,7 +293,8 @@
         </div>
         <textarea id="output" readonly rows="3" spellcheck="false" aria-label="Sign text to paste in game"></textarea>
         <button type="button" class="primary" id="copy">Copy sign text</button>
-        <p class="hint">Signs hold 50 characters, tags included. Most emoji count as 2.</p>
+        <p class="hint">Signs hold 50 characters, tags included. Most emoji count as 2. The sign font is capitals only.</p>
+        <label class="check"><input type="checkbox" id="use-br"><span>Write line breaks as <code>&lt;br&gt;</code> (4 characters) instead of <code>\n</code> (2)</span></label>
       </section>
 
       <section>
@@ -306,7 +311,7 @@
 
 <script>
 (function(){
-  const LIMIT=50, MAX_LINES=6, MAX_GAP=4, KEY='valheim-sign-forge';
+  const LIMIT=50, MAX_LINES=6, MAX_GAP=4, KEY='valheim-signcarver';
 
   const SWATCHES=[
     ['Lime','#33cc33'],['Orange','#ff9933'],['Gold','#eecc55'],['Sky','#77bbff'],
@@ -326,17 +331,17 @@
     ['Marks',[['📦','Storage'],['🗝','Key'],['🔒','Locked'],['🔓','Open'],['⚠','Warning'],['❓','Sort me'],['❗','Important'],['✅','Done'],['❌','No'],['🚫','Do not touch'],['♻','Scrap'],['🎁','Loot'],['💰','Trader / valuables'],['⬆','Up'],['⬇','Down'],['⬅','Left'],['➡','Right'],['⭐','Favorite'],['❤','Heart']]]
   ];
   const PRESETS={
-    food:{lines:[{text:'🍖',color:'#ff9933',size:10},{text:'Food',color:'#ffeecc',size:5}],above:0,below:0},
-    ore:{lines:[{text:'⛏',color:'#eecc55',size:10},{text:'Ore',color:'#ffeecc',size:5}],above:0,below:0},
-    arms:{lines:[{text:'⚔',color:'#ee4433',size:10},{text:'Weapons',color:'#ffeecc',size:5}],above:0,below:0},
-    armor:{lines:[{text:'🪖',color:'#77bbff',size:10},{text:'Armor',color:'#ffeecc',size:5}],above:0,below:0},
-    seeds:{lines:[{text:'🌱',color:'#33cc33',size:10},{text:'Seeds',color:'#ffeecc',size:5}],above:0,below:0},
+    food:{lines:[{text:'🍖',color:'#ff9933',size:6},{text:'Food',color:'#ffeecc',size:3}],above:0,below:0},
+    ore:{lines:[{text:'⛏',color:'#eecc55',size:6},{text:'Ore',color:'#ffeecc',size:3}],above:0,below:0},
+    arms:{lines:[{text:'⚔',color:'#ee4433',size:6},{text:'Weapons',color:'#ffeecc',size:3}],above:0,below:0},
+    armor:{lines:[{text:'🪖',color:'#77bbff',size:6},{text:'Armor',color:'#ffeecc',size:3}],above:0,below:0},
+    seeds:{lines:[{text:'🌱',color:'#33cc33',size:6},{text:'Seeds',color:'#ffeecc',size:3}],above:0,below:0},
     guide:{lines:[{text:'🐟',color:'#097ff7',size:10},{text:'🌊',color:'#79b9fa',size:null}],above:0,below:2}
   };
 
   const $=id=>document.getElementById(id);
   const linesEl=$('lines'), emojiEl=$('emoji'), output=$('output'), countEl=$('count'),
-        copyBtn=$('copy'), signText=$('sign-text'), addBtn=$('add-line'), hintEl=$('active-hint');
+        copyBtn=$('copy'), signText=$('sign-text'), signEl=$('sign'), stageEl=$('stage'), addBtn=$('add-line'), hintEl=$('active-hint'), brBox=$('use-br');
 
   const clone=o=>JSON.parse(JSON.stringify(o));
   const clampGap=v=>Math.min(MAX_GAP,Math.max(0,Number.isInteger(v)?v:0));
@@ -351,7 +356,7 @@
             color:(typeof l.color==='string'&&/^#[0-9a-f]{6}$/i.test(l.color))?l.color.toLowerCase():null,
             size:Number.isInteger(l.size)?l.size:null
           })),
-          above:clampGap(s.above),below:clampGap(s.below)
+          above:clampGap(s.above),below:clampGap(s.below),br:!!s.br
         };
       }
     }catch(e){}
@@ -371,15 +376,16 @@
     let out='', size=null, color=null;
     const first=s.lines[0];
     if(first&&first.size){ out+='<size='+first.size+'>'; size=first.size; }
-    out+='<br>'.repeat(s.above);
+    const nl=s.br?'<br>':'\\n';   // the game reads a typed \n as a line break; <br> also works but costs 4
+    out+=nl.repeat(s.above);
     s.lines.forEach((l,i)=>{
-      if(i>0) out+='<br>';
+      if(i>0) out+=nl;
       if(clean(l.text)==='') return;
       if(l.size&&l.size!==size){ out+='<size='+l.size+'>'; size=l.size; }
       if(l.color&&l.color!==color){ out+='<'+shortHex(l.color)+'>'; color=l.color; }
       out+=clean(l.text);
     });
-    out+='<br>'.repeat(s.below);
+    out+=nl.repeat(s.below);
     return out;
   }
 
@@ -391,25 +397,41 @@
     countEl.title=m.length>LIMIT?'Too long: the game will cut this off':'';
   }
 
+  // In-game measurement (from community testing): a size-14 capital spans the plank top to
+  // bottom, so one <size> step is plank height / (146/14). Without any size tag the game fits
+  // the text to the plank on its own, up to about size 8.
+  const PLANK_H=132, UNIT=PLANK_H/(146/14), AUTO_MAX=8;
   function renderPreview(){
     signText.innerHTML='';
-    let size=null, color=null;
-    const first=state.lines[0];
-    if(first&&first.size) size=first.size;
-    const px=v=>(v?v*4.6:22)+'px';
-    const blank=()=>{ const d=document.createElement('div'); d.style.fontSize=px(size); d.innerHTML='&nbsp;'; return d; };
-    for(let i=0;i<state.above;i++) signText.appendChild(blank());
+    const block=document.createElement('div'); block.className='block'; signText.appendChild(block);
+    const hasSize=state.lines.some(l=>l.size);
+    let size=hasSize?AUTO_MAX:null, color=null;
+    const first=state.lines[0]; if(first&&first.size) size=first.size;
+    const rows=[];
+    const blank=()=>rows.push({text:'\u00a0',size,color:null});
+    for(let i=0;i<state.above;i++) blank();
     state.lines.forEach(l=>{
-      if(clean(l.text)===''){ signText.appendChild(blank()); return; }
+      if(clean(l.text)===''){ blank(); return; }
       if(l.size) size=l.size;
       if(l.color) color=l.color;
-      const d=document.createElement('div');
-      d.textContent=clean(l.text);
-      d.style.fontSize=px(size);
-      d.style.color=color||'var(--sign-ink)';
-      signText.appendChild(d);
+      rows.push({text:clean(l.text),size,color});
     });
-    for(let i=0;i<state.below;i++) signText.appendChild(blank());
+    for(let i=0;i<state.below;i++) blank();
+    const els=rows.map(r=>{
+      const d=document.createElement('div'); d.textContent=r.text; d.style.color=r.color||'var(--sign-ink)';
+      block.appendChild(d); return d;
+    });
+    const apply=px=>rows.forEach((r,i)=>{ els[i].style.fontSize=(hasSize?r.size*UNIT:px).toFixed(1)+'px'; });
+    if(hasSize){ apply(0); }
+    else{
+      let px=AUTO_MAX*UNIT; apply(px);
+      const maxH=signEl.clientHeight*0.92, maxW=signEl.clientWidth*0.94;
+      while(px>8&&(block.offsetHeight>maxH||block.offsetWidth>maxW)){ px-=2; apply(px); }
+    }
+    // A block far taller than the plank would leave the stage; shrink plank and text together
+    // so the proportion, which is what carries into the game, stays visible.
+    const avail=stageEl.clientHeight-28, bh=block.offsetHeight;
+    signEl.style.transform=bh>avail?'scale('+(avail/bh).toFixed(3)+')':'';
   }
 
   function commit(){ save(); renderOutput(); renderPreview(); }
@@ -513,7 +535,7 @@
   addBtn.addEventListener('click',()=>addLine(state.lines.length));
 
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
-    state=clone(PRESETS[b.dataset.preset]); active=0; buildRows(); syncSteppers(); commit();
+    state=Object.assign(clone(PRESETS[b.dataset.preset]),{br:!!state.br}); active=0; buildRows(); syncSteppers(); commit();
   }));
 
   /* ---------- emoji ---------- */
@@ -566,6 +588,8 @@
   output.addEventListener('click',()=>output.select());
 
   /* ---------- boot ---------- */
+  brBox.checked=!!state.br;
+  brBox.addEventListener('change',()=>{ state.br=brBox.checked; commit(); });
   buildRows(); syncSteppers(); commit();
 })();
 </script>
