@@ -10,8 +10,12 @@ Based on the technique from [this r/valheim guide](https://www.reddit.com/r/valh
 
 Open `index.html` in a browser, or visit the GitHub Pages site for this repo.
 
-## Notes
+## How signs render emoji
 
+- The game draws emoji from a bundled single-color font (Noto Emoji), so every emoji takes whatever color tag is in force. The preview and palette use the same font.
+- Coverage stops at Emoji 15.0. Emoji added in 2024 or later, and combined emoji (skin tones, flags, joined pairs), show as boxes.
+- The tool drops the `U+FE0F` "emoji style" selector; the game ignores it and it costs a character.
+- Colors are written as 3-digit hex where possible (`<#f93>` instead of `<#ff9933>`).
 - Signs hold 50 characters including tags. Most emoji count as 2.
-- Not every emoji renders in-game. If one shows as a blank box, pick an older, more common one.
-- The preview is an approximation of the in-game sign.
+
+The palette is grouped by what people keep in chests: tools, weapons, armor, seeds, food, meads, ores, materials, creatures, places, and marks. Hover a tile for the item it stands for.

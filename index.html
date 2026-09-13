@@ -6,7 +6,7 @@
 <meta name="description" content="Build emoji chest labels for Valheim signs and copy the rich-text markup to paste in-game. No mods.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪧</text></svg>">
 <title>Valheim Sign Forge</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Germania+One&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Germania+One&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Noto+Emoji:wght@300..700&display=swap">
 <style>
   :root{
     --bg:#1a1c19;
@@ -142,11 +142,11 @@
   .g-name{font-size:14.5px;color:var(--muted);padding-top:9px}
   .emoji-row{display:flex;flex-wrap:wrap;gap:3px}
   .em{
-    font-size:22px;line-height:1;width:35px;height:35px;border-radius:6px;
+    font-size:23px;line-height:1;width:36px;height:36px;border-radius:6px;color:var(--text);
     border:1px solid transparent;background:transparent;display:grid;place-items:center;
-    font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
+    font-family:'Noto Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;
   }
-  .em:hover{background:var(--surface-2);border-color:var(--line);transform:translateY(-1px)}
+  .em:hover{background:var(--surface-2);border-color:var(--line);color:var(--accent);transform:translateY(-1px)}
   @media (max-width:520px){
     .emoji-group{grid-template-columns:1fr}
     .g-name{padding-top:4px}
@@ -180,7 +180,7 @@
   .sign-text{
     position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;white-space:nowrap;line-height:1.12;
-    font-family:'Germania One','Alegreya Sans',serif;color:var(--sign-ink);
+    font-family:'Germania One','Noto Emoji','Alegreya Sans',serif;color:var(--sign-ink);
     text-shadow:0 1px 0 rgba(0,0,0,.55);
   }
   .sign-text div{font-family:inherit}
@@ -230,15 +230,20 @@
             <button type="button" class="chip" data-preset="food">🍖 Food</button>
             <button type="button" class="chip" data-preset="ore">⛏️ Ore</button>
             <button type="button" class="chip" data-preset="arms">⚔️ Weapons</button>
+            <button type="button" class="chip" data-preset="armor">🪖 Armor</button>
+            <button type="button" class="chip" data-preset="seeds">🌱 Seeds</button>
             <button type="button" class="chip" data-preset="guide">🐟 The guide's fish</button>
           </div>
         </div>
       </section>
 
       <section>
-        <h2 class="eyebrow">Emoji</h2>
+        <div class="row-head">
+          <h2 class="eyebrow">Emoji</h2>
+          <span class="hint">drawn as the game draws them</span>
+        </div>
         <div id="emoji" class="emoji-groups"></div>
-        <p class="hint">Valheim draws many emoji, but not all of them. If one shows up as a blank box on the sign, swap it for an older, more common one.</p>
+        <p class="hint">Signs draw emoji from a single-color font, so each one takes the line's color. Hover a tile for the item it stands for. Emoji added in 2024 or later, and combined ones (skin tones, flags, joined pairs), come out as boxes in-game.</p>
       </section>
 
       <section>
@@ -304,20 +309,28 @@
   const LIMIT=50, MAX_LINES=6, MAX_GAP=4, KEY='valheim-sign-forge';
 
   const SWATCHES=[
-    ['Lime','#32cd32'],['Orange','#ff9933'],['Gold','#e8c15a'],['Sky','#79b9fa'],
-    ['Deep blue','#097ff7'],['Red','#e04b3a'],['Bone','#f0e6c8'],['Violet','#b07ae0']
+    ['Lime','#33cc33'],['Orange','#ff9933'],['Gold','#eecc55'],['Sky','#77bbff'],
+    ['Deep blue','#0088ff'],['Red','#ee4433'],['Bone','#ffeecc'],['Violet','#bb77ee']
   ];
   const EMOJI=[
-    ['Tools & arms',['⚒️','⛏️','🔨','🪓','⚔️','🗡️','🏹','🛡️','💣','🔱','⚙️','🔩','🪤','🧭']],
-    ['Food & farm',['🍖','🥩','🍗','🐟','🍄','🥕','🌽','🧅','🍯','🥚','🍞','🍺','🌾','🌰','🍇']],
-    ['Materials',['🪵','🌲','🪨','🧱','💎','🔥','❄️','🌊','🦴','⚗️','🧪','🏺','🕯️','🪙','🔑']],
-    ['Creatures',['🦌','🐗','🐺','🐉','🐔','🐑','🐢','🦑','🐸','🦇','🐝','💀','🐾']],
-    ['Marks',['🏃','🏠','⚓','⛵','🌙','☀️','⭐','✨','📦','👑','❤️','⚠️']]
+    ['Tools',[['🪓','Axe'],['⛏','Pickaxe'],['🔨','Hammer'],['⚒','Forge'],['🛠','Workbench / repair'],['🪚','Saw'],['🎣','Fishing rod'],['🪱','Bait'],['🪣','Bucket'],['🔪','Butcher knife'],['🕯','Torch'],['🍺','Tankard'],['🧭','Wisplight']]],
+    ['Weapons',[['⚔','Swords'],['🗡','Knife / dagger'],['🏹','Bow'],['🎯','Arrows / bolts'],['🛡','Shield'],['🔱','Spear / atgeir'],['💣','Bombs'],['🪄','Staff'],['🔮','Magic'],['⚡','Lightning'],['🔥','Fire'],['❄','Frost'],['☠','Poison']]],
+    ['Armor',[['🪖','Helmet'],['⛑','Helmet'],['👑','Crown / boss'],['🧢','Hood / cap'],['👕','Chest armor'],['🥋','Tunic'],['🦺','Mail / vest'],['🧥','Cape'],['👖','Leg armor'],['🥾','Boots'],['🧤','Gloves'],['🧣','Cloak'],['🎽','Light armor']]],
+    ['Seeds & farm',[['🌱','Seeds / cultivator'],['🌰','Beech seeds'],['🥕','Carrot'],['🧅','Onion / turnip'],['🌾','Barley / flax'],['🍄','Mushrooms / Jotun puffs'],['🫐','Blueberries'],['🍓','Raspberries'],['🍇','Vineberry / cloudberry'],['🌲','Tree seeds'],['🌳','Oak / birch'],['🍯','Honey / beehive'],['🐝','Queen bee'],['🥚','Eggs']]],
+    ['Food & cooking',[['🍖','Cooked meat'],['🥩','Raw meat'],['🍗','Hen / poultry'],['🌭','Sausages'],['🐟','Fish'],['🍲','Soups / stews'],['🥘','Cooking station'],['🍞','Bread'],['🥧','Pie'],['🍡','Skewers'],['🫕','Cauldron'],['🍯','Honey']]],
+    ['Mead & potions',[['🍺','Mead'],['🍻','Meads'],['🧪','Potions'],['⚗','Fermenter'],['🫙','Mead base'],['🌿','Thistle / herbs'],['🌼','Dandelion'],['❤','Health'],['💪','Stamina'],['✨','Eitr'],['☠','Poison resist'],['🧊','Frost resist'],['🔥','Fire resist']]],
+    ['Ores & metals',[['⛏','Ore'],['🪨','Stone / ore'],['🪙','Coins'],['🔩','Iron nails'],['⚙','Iron / mechanism'],['⛓','Chains'],['🧱','Ingots / black marble'],['💎','Crystal'],['⚪','Silver'],['⚫','Black metal'],['🔥','Flametal']]],
+    ['Materials',[['🪵','Wood'],['🪨','Stone'],['🪶','Feathers'],['🦴','Bone fragments'],['🧵','Linen thread'],['🧶','Flax / wool'],['🐾','Hides / leather'],['🦌','Deer hide'],['🐺','Wolf pelt'],['🦬','Lox pelt'],['🐚','Chitin / shells'],['🪲','Carapace'],['🩸','Blood bags'],['💧','Sap / dragon tears'],['🛢','Tar'],['🕯','Resin'],['🧊','Ice / crystal'],['🐍','Serpent scales']]],
+    ['Creatures & trophies',[['🦌','Deer / Eikthyr'],['🐗','Boar'],['🐺','Wolf / Fenring'],['🐉','Drake / Moder'],['🐍','Serpent'],['🐔','Hen'],['🐣','Chick'],['🦬','Lox'],['🐇','Hare'],['🦇','Bat'],['🧌','Troll'],['💀','Skeleton'],['🧟','Draugr'],['👺','Fuling'],['🧙','Dvergr'],['👻','Wraith'],['🦟','Deathsquito'],['🕷','Tick'],['🪲','Seeker'],['🐢','Leviathan'],['👑','Boss trophy']]],
+    ['Places & travel',[['🏠','Base'],['🏰','Castle'],['⛺','Camp'],['🗺','Map'],['⚓','Harbor'],['⛵','Boat'],['🛶','Karve / raft'],['🌊','Ocean'],['🏝','Island'],['⛰','Mountain'],['🏔','Deep North'],['🌋','Ashlands'],['🌫','Mistlands'],['🌾','Plains'],['🌲','Black Forest'],['🕳','Crypt / cave'],['🪦','Burial chamber'],['🌙','Night'],['☀','Day']]],
+    ['Marks',[['📦','Storage'],['🗝','Key'],['🔒','Locked'],['🔓','Open'],['⚠','Warning'],['❓','Sort me'],['❗','Important'],['✅','Done'],['❌','No'],['🚫','Do not touch'],['♻','Scrap'],['🎁','Loot'],['💰','Trader / valuables'],['⬆','Up'],['⬇','Down'],['⬅','Left'],['➡','Right'],['⭐','Favorite'],['❤','Heart']]]
   ];
   const PRESETS={
-    food:{lines:[{text:'🍖',color:'#ff9933',size:10},{text:'Food',color:'#f0e6c8',size:5}],above:0,below:0},
-    ore:{lines:[{text:'⛏️',color:'#e8c15a',size:10},{text:'Ore',color:'#f0e6c8',size:5}],above:0,below:0},
-    arms:{lines:[{text:'⚔️',color:'#e04b3a',size:10},{text:'Weapons',color:'#f0e6c8',size:5}],above:0,below:0},
+    food:{lines:[{text:'🍖',color:'#ff9933',size:10},{text:'Food',color:'#ffeecc',size:5}],above:0,below:0},
+    ore:{lines:[{text:'⛏',color:'#eecc55',size:10},{text:'Ore',color:'#ffeecc',size:5}],above:0,below:0},
+    arms:{lines:[{text:'⚔',color:'#ee4433',size:10},{text:'Weapons',color:'#ffeecc',size:5}],above:0,below:0},
+    armor:{lines:[{text:'🪖',color:'#77bbff',size:10},{text:'Armor',color:'#ffeecc',size:5}],above:0,below:0},
+    seeds:{lines:[{text:'🌱',color:'#33cc33',size:10},{text:'Seeds',color:'#ffeecc',size:5}],above:0,below:0},
     guide:{lines:[{text:'🐟',color:'#097ff7',size:10},{text:'🌊',color:'#79b9fa',size:null}],above:0,below:2}
   };
 
@@ -350,6 +363,10 @@
   let active=0;
 
   /* ---------- markup ---------- */
+  // The game ignores the U+FE0F "emoji style" selector, so it only costs a character.
+  const clean=t=>t.replace(/\uFE0F/g,'');
+  // <#f93> is read the same as <#ff9933> and saves three characters.
+  const shortHex=h=>(h[1]===h[2]&&h[3]===h[4]&&h[5]===h[6])?'#'+h[1]+h[3]+h[5]:h;
   function buildMarkup(s){
     let out='', size=null, color=null;
     const first=s.lines[0];
@@ -357,10 +374,10 @@
     out+='<br>'.repeat(s.above);
     s.lines.forEach((l,i)=>{
       if(i>0) out+='<br>';
-      if(l.text==='') return;
+      if(clean(l.text)==='') return;
       if(l.size&&l.size!==size){ out+='<size='+l.size+'>'; size=l.size; }
-      if(l.color&&l.color!==color){ out+='<#'+l.color.slice(1)+'>'; color=l.color; }
-      out+=l.text;
+      if(l.color&&l.color!==color){ out+='<'+shortHex(l.color)+'>'; color=l.color; }
+      out+=clean(l.text);
     });
     out+='<br>'.repeat(s.below);
     return out;
@@ -383,11 +400,11 @@
     const blank=()=>{ const d=document.createElement('div'); d.style.fontSize=px(size); d.innerHTML='&nbsp;'; return d; };
     for(let i=0;i<state.above;i++) signText.appendChild(blank());
     state.lines.forEach(l=>{
-      if(l.text===''){ signText.appendChild(blank()); return; }
+      if(clean(l.text)===''){ signText.appendChild(blank()); return; }
       if(l.size) size=l.size;
       if(l.color) color=l.color;
       const d=document.createElement('div');
-      d.textContent=l.text;
+      d.textContent=clean(l.text);
       d.style.fontSize=px(size);
       d.style.color=color||'var(--sign-ink)';
       signText.appendChild(d);
@@ -512,9 +529,9 @@
     const g=document.createElement('div'); g.className='emoji-group';
     const n=document.createElement('div'); n.className='g-name'; n.textContent=name;
     const row=document.createElement('div'); row.className='emoji-row';
-    list.forEach(e=>{
+    list.forEach(([e,label])=>{
       const b=document.createElement('button'); b.type='button'; b.className='em'; b.textContent=e;
-      b.setAttribute('aria-label','Add '+e);
+      b.title=label; b.setAttribute('aria-label','Add '+label+' '+e);
       b.addEventListener('click',()=>insertEmoji(e));
       row.appendChild(b);
     });
