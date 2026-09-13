@@ -124,7 +124,8 @@
   .chip{font-size:14.5px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:transparent}
   .chip:hover{background:var(--surface-2);border-color:var(--line-strong)}
   .chip .ce{font-family:'Noto Emoji',sans-serif;color:var(--c);font-size:16px;margin-right:5px;vertical-align:-1px}
-  .templates .g-name{padding-top:5px}
+  .templates .g-name{padding-top:5px;display:flex;align-items:center;gap:7px}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
 
   /* Emoji */
   .search{width:100%;font-size:16px;margin-bottom:12px;-webkit-appearance:none;appearance:none}
@@ -216,7 +217,7 @@
       <section>
         <div class="row-head">
           <h2 class="eyebrow">Templates</h2>
-          <span class="hint">pick one, then edit it</span>
+          <span class="hint">one color per type</span>
         </div>
         <div id="templates" class="emoji-groups templates"></div>
       </section>
@@ -318,31 +319,31 @@
     ['Seeds & farm',[['🌱','Seeds / cultivator'],['🌰','Beech seeds'],['🥕','Carrot'],['🧅','Onion / turnip'],['🌾','Barley / flax'],['🍄','Mushrooms / Jotun puffs'],['🫐','Blueberries'],['🍓','Raspberries'],['🍇','Vineberry / cloudberry'],['🌲','Tree seeds'],['🌳','Oak / birch'],['🍯','Honey / beehive'],['🐝','Queen bee'],['🥚','Eggs']]],
     ['Food & cooking',[['🍖','Cooked meat'],['🥩','Raw meat'],['🍗','Hen / poultry'],['🌭','Sausages'],['🐟','Fish'],['🍲','Soups / stews'],['🥘','Cooking station'],['🍞','Bread'],['🥧','Pie'],['🍡','Skewers'],['🫕','Cauldron'],['🍯','Honey']]],
     ['Mead & potions',[['🍺','Mead'],['🍻','Meads'],['🧪','Potions'],['⚗','Fermenter'],['🫙','Mead base'],['🌿','Thistle / herbs'],['🌼','Dandelion'],['❤','Health'],['💪','Stamina'],['✨','Eitr'],['☠','Poison resist'],['🧊','Frost resist'],['🔥','Fire resist']]],
-    ['Ores & metals',[['⛏','Ore'],['🪨','Stone / ore'],['🪙','Coins'],['🔩','Iron nails'],['⚙','Iron / mechanism'],['⛓','Chains'],['🧱','Ingots / black marble'],['💎','Crystal'],['⚪','Silver'],['⚫','Black metal'],['🔥','Flametal']]],
-    ['Materials',[['🪵','Wood'],['🪨','Stone'],['🪶','Feathers'],['🦴','Bone fragments'],['🧵','Linen thread'],['🧶','Flax / wool'],['🐾','Hides / leather'],['🦌','Deer hide'],['🐺','Wolf pelt'],['🦬','Lox pelt'],['🐚','Chitin / shells'],['🪲','Carapace'],['🩸','Blood bags'],['💧','Sap / dragon tears'],['🛢','Tar'],['🕯','Resin'],['🧊','Ice / crystal'],['🐍','Serpent scales']]],
-    ['Creatures & trophies',[['🦌','Deer / Eikthyr'],['🐗','Boar'],['🐺','Wolf / Fenring'],['🐉','Drake / Moder'],['🐍','Serpent'],['🐔','Hen'],['🐣','Chick'],['🦬','Lox'],['🐇','Hare'],['🦇','Bat'],['🧌','Troll'],['💀','Skeleton'],['🧟','Draugr'],['👺','Fuling'],['🧙','Dvergr'],['👻','Wraith'],['🦟','Deathsquito'],['🕷','Tick'],['🪲','Seeker'],['🐢','Leviathan'],['👑','Boss trophy']]],
+    ['Ores & metals',[['⛏','Ore'],['🪨','Stone / ore'],['🪙','Coins'],['🔩','Iron nails'],['⚙','Iron / mechanism'],['⛓','Chains'],['🧱','Ingots / black marble'],['💎','Crystal'],['⚪','Silver'],['⚫','Coal / black metal'],['🔥','Flametal']]],
+    ['Materials',[['🪵','Wood'],['🪨','Stone'],['🪶','Feathers'],['🦴','Bone fragments'],['🧵','Linen thread'],['🧶','Flax / wool'],['🐾','Hides / leather'],['🦌','Deer hide'],['🐺','Wolf pelt'],['🦬','Lox pelt'],['🐚','Chitin / shells'],['🪲','Carapace'],['🩸','Blood bags'],['👁','Greydwarf eyes'],['💧','Sap / dragon tears'],['🛢','Tar'],['🕯','Resin'],['🧊','Ice / crystal'],['🐍','Serpent scales']]],
+    ['Creatures & trophies',[['🦌','Deer / Eikthyr'],['🐗','Boar'],['🐺','Wolf / Fenring'],['🐉','Drake / Moder'],['🐍','Serpent'],['🐔','Hen'],['🐣','Chick'],['🦬','Lox'],['🐇','Hare'],['🦇','Bat'],['🧌','Troll'],['💀','Skeleton'],['🧟','Draugr'],['👺','Fuling'],['🧙','Dvergr'],['👻','Wraith'],['🦟','Deathsquito'],['🕷','Tick'],['🪲','Seeker'],['🐢','Leviathan'],['🏆','Trophy'],['👑','Boss trophy']]],
     ['Places & travel',[['🏠','Base'],['🏰','Castle'],['⛺','Camp'],['🗺','Map'],['⚓','Harbor'],['⛵','Boat'],['🛶','Karve / raft'],['🌊','Ocean'],['🏝','Island'],['⛰','Mountain'],['🏔','Deep North'],['🌋','Ashlands'],['🌫','Mistlands'],['🌾','Plains'],['🌲','Black Forest'],['🕳','Crypt / cave'],['🪦','Burial chamber'],['🌙','Night'],['☀','Day']]],
     ['Marks',[['📦','Storage'],['🗝','Key'],['🔒','Locked'],['🔓','Open'],['⚠','Warning'],['❓','Sort me'],['❗','Important'],['✅','Done'],['❌','No'],['🚫','Do not touch'],['♻','Scrap'],['🎁','Loot'],['💰','Trader / valuables'],['⬆','Up'],['⬇','Down'],['⬅','Left'],['➡','Right'],['⭐','Favorite'],['❤','Heart']]]
   ];
   // Chest-label templates: emoji at size 6 over a word at size 3 fits the plank with room to spare.
   const WORD='#ffeecc';
   const label=(e,word,c)=>({lines:[{text:e,color:c,size:6},{text:word,color:WORD,size:3}],above:0,below:0});
+  // One color per type, so a glance across a storage room tells food from gear from building stock.
   const TEMPLATES=[
-    ['Kitchen & farm',[
-      ['🍖','Food','#ff9933'],['🥩','Meat','#ee5555'],['🐟','Fish','#77bbff'],['🥚','Eggs','#ffdd88'],
-      ['🍯','Honey','#ffcc33'],['🍄','Mushrooms','#ff6666'],['🥕','Crops','#ffaa55'],['🌾','Grain','#eedd77'],
-      ['🌱','Seeds','#33cc33'],['🍺','Mead','#ffcc66'],['🧪','Potions','#cc77ff']]],
-    ['Workshop',[
-      ['🪓','Tools','#eecc55'],['⚔','Weapons','#ee4433'],['🏹','Bows','#99cc66'],['🎯','Arrows','#ddcc99'],
-      ['🛡','Shields','#66aaee'],['🪖','Armor','#99ccff'],['🧥','Capes','#bb77ee']]],
-    ['Materials',[
-      ['🪵','Wood','#cc9966'],['🪨','Stone','#bbbbbb'],['⛏','Ore','#ddaa66'],['🧱','Metal','#cccccc'],
-      ['🔩','Nails','#aaaaaa'],['🐾','Hides','#cc8855'],['🪶','Feathers','#eeeeee'],['🦴','Bones','#dddddd'],
-      ['🧵','Thread','#88ccff'],['🕯','Resin','#ffdd66'],['🔥','Cores','#ff6633'],['🩸','Blood','#dd3333'],
-      ['✨','Eitr','#99eeff'],['🛢','Tar','#999999'],['🐚','Chitin','#ccbbaa']]],
-    ['Other',[
-      ['🪙','Coins','#ffcc33'],['💎','Valuables','#66eeff'],['💀','Trophies','#dddddd'],['📦','Misc','#cccccc'],
-      ['❓','Sort me','#ffcc33'],['🚫','Keep out','#ee4433'],['♻','Scrap','#66cc66'],['⚓','Sailing','#77bbff']]]
+    ['Kitchen & farm','#ff9933',[
+      ['🍖','Food'],['🥩','Meat'],['🐟','Fish'],['🥚','Eggs'],['🍯','Honey'],['🍄','Mushrooms'],
+      ['🥕','Carrots'],['🧅','Onions'],['🌾','Grain'],['🫐','Berries'],['🌱','Seeds'],['🍺','Mead'],['🧪','Potions']]],
+    ['Workshop','#ee4433',[
+      ['🪓','Tools'],['⚔','Weapons'],['🏹','Bows'],['🎯','Arrows'],['🛡','Shields'],['🪖','Armor'],['🧥','Capes'],['💣','Bombs']]],
+    ['Building','#eecc55',[
+      ['🪵','Wood'],['🌲','Timber'],['🌳','Fine wood'],['🪨','Stone'],['🔩','Nails'],['⛓','Chains'],['🕯','Resin'],['🛢','Tar']]],
+    ['Crafting','#66cc66',[
+      ['⛏','Ore'],['🧱','Metal'],['⚫','Coal'],['🦌','Hides'],['🐾','Leather'],['🐺','Pelts'],['🪶','Feathers'],['🦴','Bones'],
+      ['👁','Eyes'],['🧵','Thread'],['🔥','Cores'],['🩸','Blood'],['✨','Eitr'],['🐚','Chitin'],['🐍','Scales'],['💎','Gems']]],
+    ['Trophies','#bb77ee',[
+      ['🏆','Trophies'],['🦌','Heads'],['🐗','Boar'],['🐺','Wolf'],['🧌','Troll'],['🐉','Drake'],['🦬','Lox'],['🐍','Serpent'],['🧟','Draugr'],['👺','Fuling']]],
+    ['Other','#77bbff',[
+      ['🪙','Coins'],['👑','Valuables'],['📦','Misc'],['❓','Sort me'],['🚫','Keep out'],['♻','Scrap'],['⚓','Sailing'],['🗺','Exploring']]]
   ];
   // The r/valheim guide's own example, kept as it was posted: oversized on purpose, pushed up by two breaks.
   const GUIDE={lines:[{text:'🐟',color:'#097ff7',size:10},{text:'🌊',color:'#79b9fa',size:null}],above:0,below:2};
@@ -554,11 +555,13 @@
   }
   (function buildTemplates(){
     const root=$('templates');
-    TEMPLATES.forEach(([name,list])=>{
+    TEMPLATES.forEach(([name,c,list])=>{
       const g=document.createElement('div'); g.className='emoji-group';
-      const n=document.createElement('div'); n.className='g-name'; n.textContent=name;
+      const n=document.createElement('div'); n.className='g-name';
+      const dot=document.createElement('span'); dot.className='dot'; dot.style.setProperty('--c',c); dot.title=c;
+      n.append(dot,name);
       const row=document.createElement('div'); row.className='chips';
-      list.forEach(([e,word,c])=>row.appendChild(chip(e,word,c,label(e,word,c))));
+      list.forEach(([e,word])=>row.appendChild(chip(e,word,c,label(e,word,c))));
       if(name==='Other') row.appendChild(chip('🐟',"The guide's fish",'#097ff7',GUIDE));
       g.append(n,row); root.appendChild(g);
     });
