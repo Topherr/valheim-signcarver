@@ -116,13 +116,15 @@
   .sw.custom input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0}
   .sw-gap{width:1px;height:16px;background:var(--line);margin:0 2px}
 
-  .lines-foot{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;margin-top:12px}
+  .lines-foot{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:12px}
   .ghost{background:transparent;border:1px dashed var(--line-strong);border-radius:5px;padding:6px 12px;font-size:15px;color:var(--text)}
   .ghost:hover:not(:disabled){background:var(--surface-2);border-style:solid}
   .chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
   .chips-label{font-size:14px;color:var(--muted);margin-right:2px}
   .chip{font-size:14.5px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:transparent}
   .chip:hover{background:var(--surface-2);border-color:var(--line-strong)}
+  .chip .ce{font-family:'Noto Emoji',sans-serif;color:var(--c);font-size:16px;margin-right:5px;vertical-align:-1px}
+  .templates .g-name{padding-top:5px}
 
   /* Emoji */
   .search{width:100%;font-size:16px;margin-bottom:12px;-webkit-appearance:none;appearance:none}
@@ -213,6 +215,14 @@
     <main class="editor">
       <section>
         <div class="row-head">
+          <h2 class="eyebrow">Templates</h2>
+          <span class="hint">pick one, then edit it</span>
+        </div>
+        <div id="templates" class="emoji-groups templates"></div>
+      </section>
+
+      <section>
+        <div class="row-head">
           <h2 class="eyebrow">Lines</h2>
           <span class="hint" id="active-hint">Emoji you click go to line 1</span>
         </div>
@@ -220,15 +230,6 @@
         <p class="hint">Sizes are absolute: 14 fills the plank top to bottom, and lines add up, so 6 for the emoji plus 3 for the word fits. Leave every size blank and the game fits the text to the plank on its own, up to about size 8.</p>
         <div class="lines-foot">
           <button type="button" class="ghost" id="add-line">+ Add line</button>
-          <div class="chips" role="group" aria-label="Start from a preset">
-            <span class="chips-label">Start from</span>
-            <button type="button" class="chip" data-preset="food">🍖 Food</button>
-            <button type="button" class="chip" data-preset="ore">⛏️ Ore</button>
-            <button type="button" class="chip" data-preset="arms">⚔️ Weapons</button>
-            <button type="button" class="chip" data-preset="armor">🪖 Armor</button>
-            <button type="button" class="chip" data-preset="seeds">🌱 Seeds</button>
-            <button type="button" class="chip" data-preset="guide">🐟 The guide's fish</button>
-          </div>
         </div>
       </section>
 
@@ -323,14 +324,28 @@
     ['Places & travel',[['🏠','Base'],['🏰','Castle'],['⛺','Camp'],['🗺','Map'],['⚓','Harbor'],['⛵','Boat'],['🛶','Karve / raft'],['🌊','Ocean'],['🏝','Island'],['⛰','Mountain'],['🏔','Deep North'],['🌋','Ashlands'],['🌫','Mistlands'],['🌾','Plains'],['🌲','Black Forest'],['🕳','Crypt / cave'],['🪦','Burial chamber'],['🌙','Night'],['☀','Day']]],
     ['Marks',[['📦','Storage'],['🗝','Key'],['🔒','Locked'],['🔓','Open'],['⚠','Warning'],['❓','Sort me'],['❗','Important'],['✅','Done'],['❌','No'],['🚫','Do not touch'],['♻','Scrap'],['🎁','Loot'],['💰','Trader / valuables'],['⬆','Up'],['⬇','Down'],['⬅','Left'],['➡','Right'],['⭐','Favorite'],['❤','Heart']]]
   ];
-  const PRESETS={
-    food:{lines:[{text:'🍖',color:'#ff9933',size:6},{text:'Food',color:'#ffeecc',size:3}],above:0,below:0},
-    ore:{lines:[{text:'⛏',color:'#eecc55',size:6},{text:'Ore',color:'#ffeecc',size:3}],above:0,below:0},
-    arms:{lines:[{text:'⚔',color:'#ee4433',size:6},{text:'Weapons',color:'#ffeecc',size:3}],above:0,below:0},
-    armor:{lines:[{text:'🪖',color:'#77bbff',size:6},{text:'Armor',color:'#ffeecc',size:3}],above:0,below:0},
-    seeds:{lines:[{text:'🌱',color:'#33cc33',size:6},{text:'Seeds',color:'#ffeecc',size:3}],above:0,below:0},
-    guide:{lines:[{text:'🐟',color:'#097ff7',size:10},{text:'🌊',color:'#79b9fa',size:null}],above:0,below:2}
-  };
+  // Chest-label templates: emoji at size 6 over a word at size 3 fits the plank with room to spare.
+  const WORD='#ffeecc';
+  const label=(e,word,c)=>({lines:[{text:e,color:c,size:6},{text:word,color:WORD,size:3}],above:0,below:0});
+  const TEMPLATES=[
+    ['Kitchen & farm',[
+      ['🍖','Food','#ff9933'],['🥩','Meat','#ee5555'],['🐟','Fish','#77bbff'],['🥚','Eggs','#ffdd88'],
+      ['🍯','Honey','#ffcc33'],['🍄','Mushrooms','#ff6666'],['🥕','Crops','#ffaa55'],['🌾','Grain','#eedd77'],
+      ['🌱','Seeds','#33cc33'],['🍺','Mead','#ffcc66'],['🧪','Potions','#cc77ff']]],
+    ['Workshop',[
+      ['🪓','Tools','#eecc55'],['⚔','Weapons','#ee4433'],['🏹','Bows','#99cc66'],['🎯','Arrows','#ddcc99'],
+      ['🛡','Shields','#66aaee'],['🪖','Armor','#99ccff'],['🧥','Capes','#bb77ee']]],
+    ['Materials',[
+      ['🪵','Wood','#cc9966'],['🪨','Stone','#bbbbbb'],['⛏','Ore','#ddaa66'],['🧱','Metal','#cccccc'],
+      ['🔩','Nails','#aaaaaa'],['🐾','Hides','#cc8855'],['🪶','Feathers','#eeeeee'],['🦴','Bones','#dddddd'],
+      ['🧵','Thread','#88ccff'],['🕯','Resin','#ffdd66'],['🔥','Cores','#ff6633'],['🩸','Blood','#dd3333'],
+      ['✨','Eitr','#99eeff'],['🛢','Tar','#999999'],['🐚','Chitin','#ccbbaa']]],
+    ['Other',[
+      ['🪙','Coins','#ffcc33'],['💎','Valuables','#66eeff'],['💀','Trophies','#dddddd'],['📦','Misc','#cccccc'],
+      ['❓','Sort me','#ffcc33'],['🚫','Keep out','#ee4433'],['♻','Scrap','#66cc66'],['⚓','Sailing','#77bbff']]]
+  ];
+  // The r/valheim guide's own example, kept as it was posted: oversized on purpose, pushed up by two breaks.
+  const GUIDE={lines:[{text:'🐟',color:'#097ff7',size:10},{text:'🌊',color:'#79b9fa',size:null}],above:0,below:2};
 
   const $=id=>document.getElementById(id);
   const linesEl=$('lines'), emojiEl=$('emoji'), output=$('output'), countEl=$('count'),
@@ -357,7 +372,7 @@
   }
   function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)) }catch(e){} }
 
-  let state=load()||clone(PRESETS.food);
+  let state=load()||label('🍖','Food','#ff9933');
   let active=0;
 
   /* ---------- markup ---------- */
@@ -527,9 +542,27 @@
 
   addBtn.addEventListener('click',()=>addLine(state.lines.length));
 
-  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
-    state=Object.assign(clone(PRESETS[b.dataset.preset]),{br:!!state.br}); active=0; buildRows(); syncSteppers(); commit();
-  }));
+  function useTemplate(t){
+    state=Object.assign(clone(t),{br:!!state.br}); active=0; buildRows(); syncSteppers(); commit();
+  }
+  function chip(e,word,c,t){
+    const b=document.createElement('button'); b.type='button'; b.className='chip';
+    const ce=document.createElement('span'); ce.className='ce'; ce.textContent=e; ce.style.setProperty('--c',c);
+    b.append(ce,word); b.title='Start from '+word;
+    b.addEventListener('click',()=>useTemplate(t));
+    return b;
+  }
+  (function buildTemplates(){
+    const root=$('templates');
+    TEMPLATES.forEach(([name,list])=>{
+      const g=document.createElement('div'); g.className='emoji-group';
+      const n=document.createElement('div'); n.className='g-name'; n.textContent=name;
+      const row=document.createElement('div'); row.className='chips';
+      list.forEach(([e,word,c])=>row.appendChild(chip(e,word,c,label(e,word,c))));
+      if(name==='Other') row.appendChild(chip('🐟',"The guide's fish",'#097ff7',GUIDE));
+      g.append(n,row); root.appendChild(g);
+    });
+  })();
 
   /* ---------- emoji ---------- */
   function insertEmoji(e){

@@ -20,4 +20,4 @@ Open `index.html` in a browser, or visit the GitHub Pages site for this repo.
 - **Colors** are written as 3-digit hex where possible (`<#f93>` instead of `<#ff9933>`), and the `U+FE0F` emoji-style selector is dropped since the game ignores it.
 - Signs hold 50 characters including tags. Most emoji count as 2.
 
-A search box finds any single-glyph emoji by its Unicode name or its Valheim label ("eye", "lox", "draugr"). The palette is grouped by what people keep in chests: tools, weapons, armor, seeds, food, meads, ores, materials, creatures, places, and marks. Hover a tile for the item it stands for.
+Forty-two ready-made chest labels (Food, Tools, Ore, Hides, Sort me, and so on) are grouped by where the chest lives; pick one and edit. A search box finds any single-glyph emoji by its Unicode name or its Valheim label ("eye", "lox", "draugr"). The palette is grouped by what people keep in chests: tools, weapons, armor, seeds, food, meads, ores, materials, creatures, places, and marks. Hover a tile for the item it stands for.
